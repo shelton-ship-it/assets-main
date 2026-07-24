@@ -1,0 +1,12 @@
+{
+  "name": "iptv-assets-generator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
