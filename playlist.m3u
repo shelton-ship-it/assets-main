@@ -5791,10 +5791,6 @@ https://jmc-live.ercdn.net/amutv/amutv.m3u8
 https://5e50264bd6766.streamlock.net/mexiquense2/videomexiquense2/playlist.m3u8
 #EXTINF:-1 tvg-id="AnadoluNetTV.tr" tvg-name="Anadolu Net TV" tvg-logo="https://www.anadolunettv.com/d/r/logo.png" group-title="general" tvg-country="TR",Anadolu Net TV
 https://live.artidijitalmedya.com/artidijital_anadolunet/anadolunet/playlist.m3u8
-#EXTINF:-1 tvg-id="Ananda.id" tvg-name="Ananda" tvg-logo="https://hosting.renderforestsites.com/35126779/1641323/media/080149eae7588f361ccb01b1387c00ca.webp" group-title="kids" tvg-country="ID",Ananda
-https://vodcdn.bamboo-cloud.com/livehls/68ef86320630444b1f796875/master.m3u8
-#EXTINF:-1 tvg-id="Ananda.id" tvg-name="Ananda" tvg-logo="https://hosting.renderforestsites.com/35126779/1641323/media/080149eae7588f361ccb01b1387c00ca.webp" group-title="kids" tvg-country="ID",Ananda
-https://gist.githubusercontent.com/iptvonlinetv/253efb11d4505b0467d3beb0d7b9cee5/raw/2a4884309cb80fba93d633f625295cef05ddf573/udp201.908.880:5000.m3u8
 #EXTINF:-1 tvg-id="AnandaBarta.in" tvg-name="Ananda Barta" tvg-logo="https://i.imgur.com/yWo4RaV.jpeg" group-title="news" tvg-country="IN",Ananda Barta
 https://account19.livebox.co.in/Anandabarta2hls/live.m3u8
 #EXTINF:-1 tvg-id="AnandaTV.bd" tvg-name="Ananda TV" tvg-logo="https://i.imgur.com/jkbo7Qe.png" group-title="entertainment" tvg-country="BD",Ananda TV
@@ -6323,6 +6319,8 @@ https://dash2.antik.sk/live/test_armenia/playlist.m3u8
 https://amtv.tulixcdn.com/amtv3/am3abr/index.m3u8
 #EXTINF:-1 tvg-id="ArmeniaPremium.am" tvg-name="Armenia Premium" group-title="movies" tvg-country="AM",Armenia Premium
 http://stream.mcquack.net/123/index.m3u8
+#EXTINF:-1 tvg-id="ArmeniaTV.am" tvg-name="Armenia TV" tvg-logo="https://i.imgur.com/UnoI5uM.png" group-title="general" tvg-country="AM",Armenia TV
+http://starcius-cinema.com/20690/index.m3u8
 #EXTINF:-1 tvg-id="ArmeniaTVSatellite.am" tvg-name="Armenia TV Satellite" tvg-logo="https://i.imgur.com/UnoI5uM.png" group-title="general" tvg-country="AM",Armenia TV Satellite
 http://stream.mcquack.net/175/index.m3u8
 #EXTINF:-1 tvg-id="ArmyTV.ua" tvg-name="Army TV" tvg-logo="https://i.imgur.com/pGByjbh.png" group-title="news" tvg-country="UA",Army TV
@@ -7556,8 +7554,6 @@ http://118.81.195.79:9003/hls/20/index.m3u8
 #EXTINF:-1 tvg-id="BeijingSatelliteTV.cn" tvg-name="Beijing Satellite TV" tvg-logo="https://i.imgur.com/vsktAez.png" group-title="general" tvg-country="CN",Beijing Satellite TV
 http://14.152.88.77/liveplay-kk.rtxapp.com/live/program/live/bjwshd/4000000/mnf.m3u8
 #EXTINF:-1 tvg-id="beINSportsUSA.us" tvg-name="beIN Sports USA" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/d/d6/BeIN_Sports_logo_%28vertical_version%29.svg" group-title="sports" tvg-country="US",beIN Sports USA
-http://23.237.104.106:8080/USA_BEIN/index.m3u8
-#EXTINF:-1 tvg-id="beINSportsUSA.us" tvg-name="beIN Sports USA" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/d/d6/BeIN_Sports_logo_%28vertical_version%29.svg" group-title="sports" tvg-country="US",beIN Sports USA
 http://40.160.24.52/BEIN_SPORTS_HD/index.m3u8
 #EXTINF:-1 tvg-id="beINSportsUSA.us" tvg-name="beIN Sports USA" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/d/d6/BeIN_Sports_logo_%28vertical_version%29.svg" group-title="sports" tvg-country="US",beIN Sports USA
 https://messi.damitv.st/papi/ts/beinsports-usa/playlist.m3u8
@@ -7891,8 +7887,6 @@ http://112.25.48.68/live/program/live/btws/1300000/mnf.m3u8
 https://jireh-7-hls-video-us-isp.dps.live/hls-video/339f69c6122f6d8f4574732c235f09b7683e31a5/bbtv/bbtv.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="BiosferaTV.es" tvg-name="Biosfera TV" tvg-logo="https://i.imgur.com/khytcgd.png" group-title="Other" tvg-country="ES",Biosfera TV
 https://tvdatta.com:3021/live/biosferatvlive.m3u8
-#EXTINF:-1 tvg-id="BioskopTelkomVision.id" tvg-name="Bioskop TelkomVision" tvg-logo="https://hosting.renderforestsites.com/35126779/1657983/media/2471109432fded503146d8fcf24c151e.png" group-title="movies" tvg-country="ID",Bioskop TelkomVision
-https://gist.githubusercontent.com/iptvonlinetv/8bf6f2e766091c54a07743ac6827f0f4/raw/afa1fdc6afa1fed44a29458da114bf98c2f9a0d6/udp810.710.800:2000.m3u8
 #EXTINF:-1 tvg-id="BirTV.tr" tvg-name="Bir TV" tvg-logo="https://birtv.tv/assets/upload/637f83951df60.png" group-title="Other" tvg-country="TR",Bir TV
 https://edge.taksimbilisim.com/birtv/bant1/playlist.m3u8
 #EXTINF:-1 tvg-id="bitMe.mx" tvg-name="bitMe" tvg-logo="https://i.imgur.com/79hrcx8.png" group-title="entertainment" tvg-country="MX",bitMe
@@ -10596,8 +10590,6 @@ https://n18syndication.akamaized.net/bpk-tv/CNBC_Bazaar_NW18_MOB/output01/master
 #EXTINF:-1 tvg-id="CNBCe.tr" tvg-name="CNBC-e" tvg-logo="https://s.cnbce.com/dist/images/logo-nav.png" group-title="business" tvg-country="TR",CNBC-e
 https://hnpsechtsc.turknet.ercdn.net/xpnvudnlsv/cnbc-e/cnbc-e.m3u8
 #EXTINF:-1 tvg-id="CNBCIndonesia.id" tvg-name="CNBC Indonesia" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/5/51/CNBC_Indonesia_2025.svg" group-title="business" tvg-country="ID",CNBC Indonesia
-https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/master.m3u8
-#EXTINF:-1 tvg-id="CNBCIndonesia.id" tvg-name="CNBC Indonesia" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/5/51/CNBC_Indonesia_2025.svg" group-title="business" tvg-country="ID",CNBC Indonesia
 https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/playlist.m3u8
 #EXTINF:-1 tvg-id="CNBCMongolia.mn" tvg-name="CNBC Mongolia" tvg-logo="https://cnbc.mn/_next/image?url=%2F_next%2Fstatic%2Fmedia%2F07.5c42b114.png&w=828&q=75" group-title="news" tvg-country="MN",CNBC Mongolia
 https://cdn4.skygo.mn/live/disk1/CNBC/HLSv3-FTA/CNBC.m3u8
@@ -12526,11 +12518,11 @@ https://video.streams.ovh:1936/egnatiatv/egnatiatv/index.m3u8
 #EXTINF:-1 tvg-id="EgykerTV.hu" tvg-name="Egyker TV" tvg-logo="https://i.imgur.com/yhMhvPq.png" group-title="general" tvg-country="HU",Egyker TV
 https://iptv01.eurocable.co.hu/EC-EGYKERTVHD/index.m3u8
 #EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general" tvg-country="ID",E International
-https://gist.githubusercontent.com/iptvonlinetv/cf56ccf36d1c0827e4dc470db7b7912d/raw/066b1c9755b2496805575f16d413bd1207ca8117/udp120.510.450:6060.m3u8
-#EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general" tvg-country="ID",E International
 https://vodcdn.bamboo-cloud.com/livehls/69a123b780c99d28cc0f0016/master.m3u8
 #EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general" tvg-country="ID",E International
 https://gist.githubusercontent.com/iptvonlinetv/cf56ccf36d1c0827e4dc470db7b7912d/raw/066b1c9755b2496805575f16d413bd1207ca8117/udp315.520.789:8060.m3u8
+#EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general" tvg-country="ID",E International
+https://gist.githubusercontent.com/iptvonlinetv/cf56ccf36d1c0827e4dc470db7b7912d/raw/066b1c9755b2496805575f16d413bd1207ca8117/udp120.510.450:6060.m3u8
 #EXTINF:-1 tvg-id="EInternational.id" tvg-name="E International" tvg-logo="https://hosting.renderforestsites.com/35126779/1659328/media/1058391c8059a0d092426e145d55951b.png" group-title="general" tvg-country="ID",E International
 https://gist.githubusercontent.com/iptvonlinetv/cf56ccf36d1c0827e4dc470db7b7912d/raw/066b1c9755b2496805575f16d413bd1207ca8117/udp410.310.578:2020.m3u8
 #EXTINF:-1 tvg-id="EkattorTV.bd" tvg-name="Ekattor TV" tvg-logo="https://i.imgur.com/zoLwwUK.png" group-title="news" tvg-country="BD",Ekattor TV
@@ -12825,9 +12817,9 @@ https://twitch-m3u8.bastypro112.workers.dev/erboldigital/index.m3u8
 https://hls.erfanhalgheh.live/hls/stream.m3u8
 #EXTINF:-1 tvg-id="ERiTV1.er" tvg-name="ERi-TV 1" tvg-logo="https://i.imgur.com/bTR0Huw.png" group-title="general" tvg-country="ER",ERi-TV 1
 https://jmc-live.ercdn.net/eritreatv/eritreatv.m3u8
-#EXTINF:-1 tvg-id="ErosUniverseBollywoodCinema.np" tvg-name="Eros Universe Bollywood Cinema" tvg-logo="https://i.ibb.co/qM7WZSK0/Eros-Universe-Bollywood-Cinema.png" group-title="movies" tvg-country="NP",Eros Universe Bollywood Cinema
+#EXTINF:-1 tvg-id="ErosUniverseBollywoodCinema.np" tvg-name="Eros Universe Bollywood Cinema" group-title="Other",Eros Universe Bollywood Cinema
 https://prod-runn.cdn.runn.tv/eros/stream/blywcm/playlist.m3u8
-#EXTINF:-1 tvg-id="ErosUniverseEntertainment.np" tvg-name="Eros Universe Entertainment" tvg-logo="https://i.ibb.co/q3FhgGFx/Eros-Universe-Entertainment.png" group-title="movies" tvg-country="NP",Eros Universe Entertainment
+#EXTINF:-1 tvg-id="ErosUniverseEntertainment.np" tvg-name="Eros Universe Entertainment" group-title="Other",Eros Universe Entertainment
 https://prod-runn.cdn.runn.tv/eros/stream/ersent/playlist.m3u8
 #EXTINF:-1 tvg-id="ERT3.gr" tvg-name="ERT3" tvg-logo="https://i.imgur.com/f2l9bDR.png" group-title="entertainment" tvg-country="GR",ERT3
 https://ert-ucdn.broadpeak-aas.com/bpk-tv/ERT3/default/index.m3u8
@@ -14753,7 +14745,9 @@ https://amg01753-narrativeentert-greatmovies-samsunguk-7z6eh.amagi.tv/playlist/a
 https://amg01753-narrativeuk-amg01753c2-lg-gb-1832.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-greatchristmas-lggb/playlist.m3u8
 #EXTINF:-1 tvg-id="GREATromance.uk" tvg-name="GREAT! romance" tvg-logo="https://d2n0069hmnqmmx.cloudfront.net/epgdata/1.0/newchanlogos/512/512/skychb3643.png" group-title="movies" tvg-country="UK",GREAT! romance
 https://amg01753-narrativeentert-greatchristmas-samsunguk-8atls.amagi.tv/playlist/amg01753-narrativeentert-greatchristmas-samsunguk/playlist.m3u8
-#EXTINF:-1 tvg-id="GreenGoldTV.np" tvg-name="Green Gold TV" tvg-logo="https://i.ibb.co/TDPsPVkT/Greengoldtv.png" group-title="kids" tvg-country="NP",Green Gold TV
+#EXTINF:-1 tvg-id="GreenGoldTV.np" tvg-name="Green Gold TV HD" group-title="Other",Green Gold TV HD
+https://vglivessai.akamaized.net/eu/v1/manifest/611d79b11b77e2f571934fd80ca1413453772ac7/675a37e5-f517-434e-adae-d25ae1706340/fbdb017c-7b61-4f62-8719-28b27e44c862/0.m3u8
+#EXTINF:-1 tvg-id="GreenGoldTV.np" tvg-name="Green Gold TV" group-title="Other",Green Gold TV
 https://vglivessai.akamaized.net/eu/v1/manifest/611d79b11b77e2f571934fd80ca1413453772ac7/675a37e5-f517-434e-adae-d25ae1706340/fbdb017c-7b61-4f62-8719-28b27e44c862/4.m3u8
 #EXTINF:-1 tvg-id="GreensboroTV.us" tvg-name="Greensboro TV" group-title="legislative" tvg-country="US",Greensboro TV
 https://lin12.isilive.ca/live/greensboro/GTN/index.m3u8
@@ -18151,7 +18145,7 @@ https://soportedvb.click:3017/live/linierostvlive.m3u8
 https://linktv.b-cdn.net/linktv.m3u8
 #EXTINF:-1 tvg-id="LINQTV.nl" tvg-name="LINQ TV" tvg-logo="https://i.imgur.com/0DgP3vu.png" group-title="general" tvg-country="NL",LINQ TV
 https://ms7.mx-cd.net/dtv-09/246-2090022/Linq_Media_TV.smil/playlist.m3u8
-#EXTINF:-1 tvg-id="LionsgatePlay.np" tvg-name="Lionsgate Play" tvg-logo="https://i.ibb.co/jvFcxJK6/Lionsgate-Play.png" group-title="entertainment" tvg-country="NP",Lionsgate Play
+#EXTINF:-1 tvg-id="LionsgatePlay.np" tvg-name="Lionsgate Play" group-title="Other",Lionsgate Play
 http://103.159.180.34:5001/live/2327.m3u8
 #EXTINF:-1 tvg-id="LiraTV.es" tvg-name="LiraTV" tvg-logo="https://i.imgur.com/hBswXYZ.png" group-title="music" tvg-country="ES",LiraTV
 https://cloud2.streaminglivehd.com:1936/liratv/liratv/playlist.m3u8
@@ -21015,9 +21009,9 @@ https://live.mediatech.vn/live/2859591eef2e92249b682db021f4247c364/chunklist.m3u
 https://67acccf130420.streamlock.net/ngradiotv/ngradiotv/playlist.m3u8
 #EXTINF:-1 tvg-id="NH.nl" tvg-name="NH" tvg-logo="https://i.imgur.com/SPkK4md.png" group-title="general" tvg-country="NL",NH
 https://takeoff.jetstre.am/?account=nhnieuws&file=live&output=playlist.m3u8&protocol=https&service=wowza&type=live
-#EXTINF:-1 tvg-id="NHBollyFlix.np" tvg-name="NH BollyFlix" tvg-logo="https://i.ibb.co/yF9MPTDK/blyflx.png" group-title="movies" tvg-country="NP",NH BollyFlix
+#EXTINF:-1 tvg-id="NHBollyFlix.np" tvg-name="NH BollyFlix" group-title="Other",NH BollyFlix
 https://cc-r5hupcym5oehh.akamaized.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-r5hupcym5oehh/d47d1910-8862-4b83-a8a6-00ac11307859/0.m3u8
-#EXTINF:-1 tvg-id="NHBollyRaga.np" tvg-name="NH BollyRaga" tvg-logo="https://i.ibb.co/BKB9mv1K/NH-Bolly-Raga.png" group-title="music" tvg-country="NP",NH BollyRaga
+#EXTINF:-1 tvg-id="NHBollyRaga.np" tvg-name="NH BollyRaga" group-title="Other",NH BollyRaga
 https://cc-up9j649x4thrj.akamaized.net/v1/manifest/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-up9j649x4thrj/f935ee75-bf1b-4bf6-a30c-1f096a0083c5/0.m3u8
 #EXTINF:-1 tvg-id="NHKGeneralTV.jp" tvg-name="NHK General TV" tvg-logo="https://i.imgur.com/fAZ2BEZ.png" group-title="general" tvg-country="JP",NHK General TV
 https://nhk4.mov3.co/hls/nhk.m3u8
@@ -22083,7 +22077,7 @@ https://freem3u.xyz/api/live/play.m3u8?vid=179
 https://freem3u.xyz/api/live/play.m3u8?vid=188
 #EXTINF:-1 tvg-id="OnlineTVNusantara.id" tvg-name="Online TV Nusantara" tvg-logo="https://i.imgur.com/E9CCIpP.jpg" group-title="general" tvg-country="ID",Online TV Nusantara
 https://5bf7b725107e5.streamlock.net/onlinetvnusantara/onlinetvnusantara/playlist.m3u8
-#EXTINF:-1 tvg-id="ONMovies.vn" tvg-name="ON Movies" group-title="movies" tvg-country="VN",ON Movies
+#EXTINF:-1 tvg-id="ONMovies.vn" tvg-name="ON Movies" tvg-logo="https://i.ibb.co/fdbgvtT8/IMG-2523.webp" group-title="movies" tvg-country="VN",ON Movies
 https://freem3u.xyz/api/live/play.m3u8?vid=181
 #EXTINF:-1 tvg-id="ONNewsHD.pk" tvg-name="ON News HD" tvg-logo="https://i.imgur.com/h3IUrMI.png" group-title="news" tvg-country="PK",ON News HD
 http://103.250.28.74:8000/play/a046/index.m3u8
@@ -25169,6 +25163,8 @@ https://rcntv-rcnmas-1-us.roku.wurl.tv/playlist.m3u8
 http://181.78.8.199:8000/play/a0a7/index.m3u8
 #EXTINF:-1 tvg-id="RCNNovelas.co" tvg-name="RCN Novelas" tvg-logo="https://i.imgur.com/9wxdWNQ.png" group-title="entertainment" tvg-country="CO",RCN Novelas
 http://170.238.200.199:80/rcn-novelas/index.m3u8
+#EXTINF:-1 tvg-id="RCNNovelas.co" tvg-name="RCN Novelas" tvg-logo="https://i.imgur.com/9wxdWNQ.png" group-title="entertainment" tvg-country="CO",RCN Novelas
+https://cdnlive.klicgo.net/rcnnovelas/live/playlist.m3u8
 #EXTINF:-1 tvg-id="RCTI.id" tvg-name="RCTI" tvg-logo="https://i.imgur.com/iLFx8ia.png" group-title="general" tvg-country="ID",RCTI
 https://indihuy.streamized.net/atm/DASH/rcti/manifest.mpd
 #EXTINF:-1 tvg-id="RCTV3.us" tvg-name="RCTV3" tvg-logo="https://i.imgur.com/TvFKG35.png" group-title="general" tvg-country="US",RCTV3
@@ -29764,9 +29760,7 @@ https://live2.telemicro.com.do/live/telecentrocast_1080p/playlist.m3u8
 #EXTINF:-1 tvg-id="TeleCentro.pe" tvg-name="TeleCentro" tvg-logo="https://i.imgur.com/g61TdZ3.png" group-title="general" tvg-country="PE",TeleCentro
 https://live-evg7.tv360.bitel.com.pe/bitel/telecentro/playlist.m3u8
 #EXTINF:-1 tvg-id="Telecentro.ve" tvg-name="Telecentro" tvg-logo="https://i.imgur.com/QtRNfaj.png" group-title="general" tvg-country="VE",Telecentro
-https://streamtv.intervenhosting.net:3161/live/telecentrolive.m3u8
-#EXTINF:-1 tvg-id="Telecentro.ve" tvg-name="Telecentro" tvg-logo="https://i.imgur.com/QtRNfaj.png" group-title="general" tvg-country="VE",Telecentro
-https://streamtv.intervenhosting.net:3698/live/telecentrolive.m3u8
+https://streamtv.intervenhosting.net:3531/live/telecentrovelive.m3u8
 #EXTINF:-1 tvg-id="TeleChiara.it" tvg-name="Tele Chiara" tvg-logo="https://i.imgur.com/LpXeY4v.png" group-title="general" tvg-country="IT",Tele Chiara
 http://fms.tvavicenza.it:1935/telechiara/diretta/playlist.m3u8
 #EXTINF:-1 tvg-id="TeleCibaoHD.do" tvg-name="TeleCibaoHD" tvg-logo="https://i.imgur.com/IpInp05.png" group-title="general" tvg-country="DO",TeleCibaoHD
@@ -33588,6 +33582,8 @@ http://40.160.24.55/USA_NETWORK/index.m3u8
 #EXTINF:-1 tvg-id="USANetwork.us" tvg-name="USA Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/960px-USA_Network_logo_%282016%29.svg.png" group-title="movies" tvg-country="US",USA Network
 https://gpuserver5.tier1streams.com/USA_NETWORK/index.m3u8
 #EXTINF:-1 tvg-id="USANetwork.us" tvg-name="USA Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/960px-USA_Network_logo_%282016%29.svg.png" group-title="movies" tvg-country="US",USA Network
+https://ftv.itscwd273.workers.dev/?id=USANETEAST
+#EXTINF:-1 tvg-id="USANetwork.us" tvg-name="USA Network" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/960px-USA_Network_logo_%282016%29.svg.png" group-title="movies" tvg-country="US",USA Network
 http://40.160.24.55/USA_NETWORK_WEST/index.m3u8
 #EXTINF:-1 tvg-id="USANetworkLatinAmerica.us" tvg-name="USA Network Latin America" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/USA_Network_logo_%282016%29.svg/960px-USA_Network_logo_%282016%29.svg.png" group-title="Other" tvg-country="US",USA Network Latin America
 http://177.52.24.163/USA-HD/index.m3u8
@@ -34629,6 +34625,8 @@ https://lowa8026-cmyk.github.io/iptv/WGAL-DT3/index.m3u8
 https://aegis-cloudfront-1.tubi.video/b32c0573-4add-4b47-b826-24412d952164/playlist.m3u8
 #EXTINF:-1 tvg-id="WGBATV261.us" tvg-name="WGBA-TV 26.1" tvg-logo="https://i.imgur.com/bzgfmRL.png" group-title="Other" tvg-country="US",WGBA-TV 26.1
 https://content.uplynk.com/channel/1fbfb28ae5044f619f75ae0adb011989.m3u8
+#EXTINF:-1 tvg-id="WGBODT661.us" tvg-name="WGBO-DT 66.1" tvg-logo="https://i.imgur.com/5RIEi99.png" group-title="Other" tvg-country="US",WGBO-DT 66.1
+https://unidfp-nlds154.global.ssl.fastly.net/nlds/univisionnow/univision_chi2/as/live/univision_chi2_hd_pc.m3u8?t1=null
 #EXTINF:-1 tvg-id="WGGSTV161.us" tvg-name="WGGS-TV 16.1" tvg-logo="https://i.imgur.com/Btw83JA.png" group-title="Other" tvg-country="US",WGGS-TV 16.1
 https://cdn-unified-hls.streamspot.com/ingest1/c7956aac88/playlist.m3u8?origin=1
 #EXTINF:-1 tvg-id="WGGSTV162.us" tvg-name="WGGS-TV 16.2" tvg-logo="https://i.imgur.com/UfN6aAi.png" group-title="news" tvg-country="US",WGGS-TV 16.2
