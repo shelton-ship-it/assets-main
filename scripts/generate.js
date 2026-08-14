@@ -83,6 +83,70 @@ function pickBestLogo(apiLogos) {
     return logoMap;
 }
 
+// ── Health-check: HTTPS + CORS ────────────────────────────────────────────────
+// Técnica real usada por agregadores como o TV Garden: eles não fazem proxy
+// de stream nenhum — só mostram canais cuja origem já cumpre os requisitos
+// que o browser exige (HTTPS válido + cabeçalho CORS presente). Fazemos essa
+// verificação aqui, uma vez por execução do workflow (não por viewer, não em
+// tempo real) e cortamos da playlist quem não passa. Isto corre inteiramente
+// dentro do GitHub Actions — sem servidor próprio a servir segmentos.
+//
+// Um canal só entra no playlist.m3u se:
+//   1. for https:// (http:// dá sempre mixed-content numa página https)
+//   2. a resposta trouxer Access-Control-Allow-Origin (sem isso, hls.js/
+//      fetch do browser bloqueia sempre, independentemente do resto)
+//   3. o certificado TLS for válido (fetch nativo do Node já rejeita
+//      certificados inválidos por padrão — um throw aqui já filtra isso)
+
+const HEALTHCHECK_TIMEOUT_MS = 8_000;
+const HEALTHCHECK_CONCURRENCY = 25; // paralelismo — ajusta conforme o tempo de execução do workflow
+
+async function isPlayableInBrowser(url) {
+    if (!url.startsWith('https://')) return false; // mixed content — descarta já sem gastar request
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+
+    try {
+        const resp = await fetch(url, {
+            signal: controller.signal,
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PixgoHealthcheck/1.0)' },
+        });
+
+        const acao = resp.headers.get('access-control-allow-origin');
+        if (!acao) return false; // sem CORS, o browser vai bloquear sempre
+
+        if (!resp.ok && resp.status !== 206) return false;
+        return true;
+
+    } catch {
+        // timeout, DNS falhou, certificado inválido, connection refused, etc.
+        // — qualquer uma destas também tornaria o canal injogável no browser.
+        return false;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
+// Corre isPlayableInBrowser sobre uma lista, com paralelismo limitado, para
+// não abrir milhares de conexões simultâneas nem estourar o runner do Actions.
+async function filterPlayable(items, getUrl) {
+    const results = new Array(items.length);
+    let cursor = 0;
+
+    async function worker() {
+        while (cursor < items.length) {
+            const i = cursor++;
+            results[i] = await isPlayableInBrowser(getUrl(items[i]));
+        }
+    }
+
+    const workers = Array.from({ length: HEALTHCHECK_CONCURRENCY }, worker);
+    await Promise.all(workers);
+
+    return items.filter((_, i) => results[i]);
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
     console.log('=== IPTV Assets Generator ===');
@@ -113,17 +177,27 @@ async function main() {
     const withChannelId = streams.filter(s => s.channel).length;
     console.log(`  ↳ ${withChannelId}/${streams.length} streams have a "channel" id (rest fall back to "title")`);
 
-    // 4. Gerar playlist.m3u
-    console.log('\n[4/4] Writing output files...');
+    // 4. Filtrar por playability (HTTPS + CORS) e gerar playlist.m3u
+    console.log('\n[4/5] Checking HTTPS + CORS playability...');
+
+    const seenUrls = new Set();
+    const dedupedStreams = streams.filter(s => {
+        if (!s.url || seenUrls.has(s.url)) return false;
+        seenUrls.add(s.url);
+        return true;
+    });
+    console.log(`  ↳ ${dedupedStreams.length} unique stream URLs to check`);
+
+    const playableStreams = await filterPlayable(dedupedStreams, s => s.url);
+    console.log(`  ✓ ${playableStreams.length}/${dedupedStreams.length} playable direto no browser (resto excluído do playlist)`);
+
+    console.log('\n[5/5] Writing output files...');
 
     const m3uLines = ['#EXTM3U'];
-    const seen     = new Set(); // dedup por url
 
     let added = 0;
-    for (const stream of streams) {
+    for (const stream of playableStreams) {
         const url = stream.url;
-        if (!url || seen.has(url)) continue;
-        seen.add(url);
 
         const meta  = stream.channel ? (channelMeta[stream.channel] || {}) : {};
         const tvgId = stream.channel || '';
