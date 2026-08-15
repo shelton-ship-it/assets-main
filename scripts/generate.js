@@ -108,31 +108,65 @@ function pickBestLogo(apiLogos) {
 const HEALTHCHECK_TIMEOUT_MS = 8_000;
 const HEALTHCHECK_CONCURRENCY = 25; // paralelismo — ajusta conforme o tempo de execução do workflow
 
+// ── Origens de produção a simular ─────────────────────────────────────────────
+// O browser SEMPRE envia "Origin" num pedido cross-origin; o fetch do Node NÃO
+// envia por padrão. Se o servidor do stream decide o CORS por reflexão de
+// Origin (só devolve ACAO quando reconhece o domínio, ou devolve um valor
+// diferente consoante quem pergunta), testar sem Origin dá um resultado que
+// não bate certo com o que o browser real vai ver. Aqui simulamos os domínios
+// onde o player efectivamente corre — ajusta esta lista se mudar.
+const PRODUCTION_ORIGINS = [
+    'https://www.pixgo.frii.site',
+    'https://pixgo.frii.site',
+    'https://pixgo.qzz.io',
+];
+
+// User-Agent de um browser real — alguns CDNs também decidem CORS/bloqueiam
+// consoante o UA parecer bot ou não, independentemente do Origin enviado.
+const BROWSER_UA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+    '(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+
+// Um canal é considerado "playable in browser" se PELO MENOS uma das origens
+// de produção receber CORS válido — ou seja, funciona a partir de pelo menos
+// um dos domínios onde o site corre. Isto NÃO garante 100% de paridade com o
+// browser real: fingerprinting de TLS/HTTP2 (JA3/JA4) do Node é estruturalmente
+// diferente do Chrome e nenhum header consegue mascarar isso, e o alvo por
+// trás de shorteners/CDNs pode rodar entre esta verificação e o play do
+// utilizador (drift temporal — reduz-se correndo o workflow mais vezes, não
+// se elimina).
 async function isPlayableInBrowser(url) {
     if (!url.startsWith('https://')) return false; // mixed content — descarta já sem gastar request
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+    for (const origin of PRODUCTION_ORIGINS) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
 
-    try {
-        const resp = await fetch(url, {
-            signal: controller.signal,
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; PixgoHealthcheck/1.0)' },
-        });
+        try {
+            const resp = await fetch(url, {
+                signal: controller.signal,
+                headers: {
+                    'User-Agent': BROWSER_UA,
+                    'Origin': origin,
+                    'Referer': origin + '/',
+                },
+            });
+            clearTimeout(timer);
 
-        const acao = resp.headers.get('access-control-allow-origin');
-        if (!acao) return false; // sem CORS, o browser vai bloquear sempre
+            const acao = resp.headers.get('access-control-allow-origin');
+            if (!acao) continue; // esta origem não passou — tenta a próxima
 
-        if (!resp.ok && resp.status !== 206) return false;
-        return true;
+            const allowed = acao === '*' || acao === origin;
+            if (allowed && (resp.ok || resp.status === 206)) return true;
 
-    } catch {
-        // timeout, DNS falhou, certificado inválido, connection refused, etc.
-        // — qualquer uma destas também tornaria o canal injogável no browser.
-        return false;
-    } finally {
-        clearTimeout(timer);
+        } catch {
+            clearTimeout(timer);
+            // timeout, DNS falhou, TLS inválido, connection refused — tenta a
+            // próxima origem, pode ser específico deste pedido
+        }
     }
+
+    return false; // nenhuma origem de produção conseguiu tocar isto
 }
 
 // Corre isPlayableInBrowser sobre uma lista, com paralelismo limitado, para
