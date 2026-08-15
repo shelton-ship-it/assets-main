@@ -127,10 +127,11 @@ const BROWSER_UA =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
     '(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
-// Um canal é considerado "playable in browser" se PELO MENOS uma das origens
-// de produção receber CORS válido — ou seja, funciona a partir de pelo menos
-// um dos domínios onde o site corre. Isto NÃO garante 100% de paridade com o
-// browser real: fingerprinting de TLS/HTTP2 (JA3/JA4) do Node é estruturalmente
+// Um canal só é considerado "playable in browser" — limpo, sem ruído — se
+// TODAS as origens de produção receberem CORS válido. Basta falhar numa
+// origem para o canal ser excluído: o objectivo é zero falsos positivos, não
+// "funciona nalgum domínio". Isto NÃO garante 100% de paridade com o browser
+// real: fingerprinting de TLS/HTTP2 (JA3/JA4) do Node é estruturalmente
 // diferente do Chrome e nenhum header consegue mascarar isso, e o alvo por
 // trás de shorteners/CDNs pode rodar entre esta verificação e o play do
 // utilizador (drift temporal — reduz-se correndo o workflow mais vezes, não
@@ -154,19 +155,20 @@ async function isPlayableInBrowser(url) {
             clearTimeout(timer);
 
             const acao = resp.headers.get('access-control-allow-origin');
-            if (!acao) continue; // esta origem não passou — tenta a próxima
-
             const allowed = acao === '*' || acao === origin;
-            if (allowed && (resp.ok || resp.status === 206)) return true;
+
+            // Falhou nesta origem → falha para o canal inteiro, corta já.
+            if (!allowed || (!resp.ok && resp.status !== 206)) return false;
 
         } catch {
             clearTimeout(timer);
-            // timeout, DNS falhou, TLS inválido, connection refused — tenta a
-            // próxima origem, pode ser específico deste pedido
+            // timeout, DNS falhou, TLS inválido, connection refused — também
+            // conta como falha nesta origem, corta já.
+            return false;
         }
     }
 
-    return false; // nenhuma origem de produção conseguiu tocar isto
+    return true; // passou em TODAS as origens de produção
 }
 
 // Corre isPlayableInBrowser sobre uma lista, com paralelismo limitado, para
