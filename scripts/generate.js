@@ -19,6 +19,13 @@
 //      obrigatório quando não há "channel" para casar com channels.json.
 // Ambas as mudanças quebravam thumbs/logos e nomes ("Unknown" em tudo).
 //
+// NOTA (2026-08): streams.json pode trazer o MESMO canal várias vezes
+// (fontes/mirrors diferentes para o mesmo nome). O filtro de playability
+// (HTTPS+CORS) não resolve isso — só garante que o stream individual abre.
+// Por isso, depois de filtrar por playability, há um passo extra de dedup
+// por NOME (dedupeByName): garante que só entra um canal por nome no
+// playlist.m3u final, escolhendo o melhor candidato entre os duplicados.
+//
 // NOTA: index.category.m3u foi descontinuado pelo iptv-org — usar API JSON.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -147,13 +154,48 @@ async function filterPlayable(items, getUrl) {
     return items.filter((_, i) => results[i]);
 }
 
+// ── Dedup por NOME de canal ───────────────────────────────────────────────────
+// Depois do filtro de playability, streams.json ainda pode conter o mesmo
+// canal várias vezes (fontes/mirrors distintos, mesmo nome). Aqui reduzimos
+// a um único stream por nome, escolhendo o melhor candidato quando há mais
+// que um:
+//   1. tem "channel" id (veio de channels.json — metadados mais fiáveis que
+//      o "title" cru de streams.json)
+//   2. tem logo associado (via logoMap, também depende de "channel")
+//   3. o primeiro que aparecer, como último recurso
+//
+// A chave de agrupamento é o mesmo "name" que acaba escrito no #EXTINF
+// (meta.name || stream.title || 'Unknown'), normalizado (trim + lowercase)
+// para não deixar passar duplicados por diferença de maiúsculas/espaços.
+function dedupeByName(items, channelMeta, logoMap) {
+    const bestByName = {}; // normalizedName -> { score, item }
+
+    for (const item of items) {
+        const meta = item.channel ? (channelMeta[item.channel] || {}) : {};
+        const name = meta.name || item.title || 'Unknown';
+        const key  = name.trim().toLowerCase();
+        if (!key) continue;
+
+        let score = 0;
+        if (item.channel) score += 2;
+        if (item.channel && logoMap[item.channel]) score += 1;
+
+        const current = bestByName[key];
+        if (!current || score > current.score) {
+            bestByName[key] = { score, item };
+        }
+    }
+
+    return Object.values(bestByName).map(({ item }) => item);
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
     console.log('=== IPTV Assets Generator ===');
     console.log(`Started at ${new Date().toISOString()}`);
 
     // 1. Buscar metadados dos canais (categorias, nomes, país)
-    console.log('\n[1/4] Fetching channels metadata...');
+    console.log('\n[1/5] Fetching channels metadata...');
     const apiChannels = await fetchJson(CHANNELS_API);
     console.log(`  ✓ ${apiChannels.length} channels`);
 
@@ -164,21 +206,21 @@ async function main() {
     }
 
     // 2. Buscar logos (endpoint próprio — channels.json não tem mais "logo")
-    console.log('\n[2/4] Fetching logos...');
+    console.log('\n[2/5] Fetching logos...');
     const apiLogos = await fetchJson(LOGOS_API);
     const logoMap  = pickBestLogo(apiLogos);
     console.log(`  ✓ ${apiLogos.length} logo entries → ${Object.keys(logoMap).length} channels with a logo`);
 
     // 3. Buscar streams activos
-    console.log('\n[3/4] Fetching active streams...');
+    console.log('\n[3/5] Fetching active streams...');
     const streams = await fetchJson(STREAMS_API);
     console.log(`  ✓ ${streams.length} streams`);
 
     const withChannelId = streams.filter(s => s.channel).length;
     console.log(`  ↳ ${withChannelId}/${streams.length} streams have a "channel" id (rest fall back to "title")`);
 
-    // 4. Filtrar por playability (HTTPS + CORS) e gerar playlist.m3u
-    console.log('\n[4/5] Checking HTTPS + CORS playability...');
+    // 4. Filtrar por playability (HTTPS + CORS)
+    console.log('\n[4/6] Checking HTTPS + CORS playability...');
 
     const seenUrls = new Set();
     const dedupedStreams = streams.filter(s => {
@@ -191,12 +233,17 @@ async function main() {
     const playableStreams = await filterPlayable(dedupedStreams, s => s.url);
     console.log(`  ✓ ${playableStreams.length}/${dedupedStreams.length} playable direto no browser (resto excluído do playlist)`);
 
-    console.log('\n[5/5] Writing output files...');
+    // 5. Dedup por nome — nunca mais de um canal com o mesmo nome no playlist final
+    console.log('\n[5/6] Deduping by channel name...');
+    const uniqueByName = dedupeByName(playableStreams, channelMeta, logoMap);
+    console.log(`  ✓ ${uniqueByName.length}/${playableStreams.length} canais únicos por nome (${playableStreams.length - uniqueByName.length} duplicados removidos)`);
+
+    console.log('\n[6/6] Writing output files...');
 
     const m3uLines = ['#EXTM3U'];
 
     let added = 0;
-    for (const stream of playableStreams) {
+    for (const stream of uniqueByName) {
         const url = stream.url;
 
         const meta  = stream.channel ? (channelMeta[stream.channel] || {}) : {};
