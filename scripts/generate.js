@@ -26,6 +26,18 @@
 // por NOME (dedupeByName): garante que só entra um canal por nome no
 // playlist.m3u final, escolhendo o melhor candidato entre os duplicados.
 //
+// NOTA (2026-08, revisão CORS): o healthcheck testava só o `stream.url` de
+// topo. Para streams HLS isso é normalmente um manifest `.m3u8` — mas o
+// player (Shaka/hls.js) não pára aí: faz parse do manifest e depois faz
+// fetch() de cada SEGMENTO (.ts/.m4s) referenciado lá dentro, que muitas
+// vezes vive num host/edge diferente com política de CORS diferente da do
+// manifest. Confirmado em produção: manifest com CORS ok, segmento
+// `.ts` do mesmo canal sem `Access-Control-Allow-Origin` → bloqueado no
+// browser mesmo com o canal "aprovado" pelo healthcheck antigo. Por isso
+// o healthcheck agora segue a cadeia manifest → (variant playlist) →
+// primeiro segmento, e só aprova o canal se CORS passar em TODOS os
+// níveis, para todas as origens de produção.
+//
 // NOTA: index.category.m3u foi descontinuado pelo iptv-org — usar API JSON.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -90,7 +102,7 @@ function pickBestLogo(apiLogos) {
     return logoMap;
 }
 
-// ── Health-check: HTTPS + CORS ────────────────────────────────────────────────
+// ── Health-check: HTTPS + CORS (manifest E segmento) ──────────────────────────
 // Técnica real usada por agregadores como o TV Garden: eles não fazem proxy
 // de stream nenhum — só mostram canais cuja origem já cumpre os requisitos
 // que o browser exige (HTTPS válido + cabeçalho CORS presente). Fazemos essa
@@ -98,15 +110,20 @@ function pickBestLogo(apiLogos) {
 // tempo real) e cortamos da playlist quem não passa. Isto corre inteiramente
 // dentro do GitHub Actions — sem servidor próprio a servir segmentos.
 //
-// Um canal só entra no playlist.m3u se:
-//   1. for https:// (http:// dá sempre mixed-content numa página https)
-//   2. a resposta trouxer Access-Control-Allow-Origin (sem isso, hls.js/
-//      fetch do browser bloqueia sempre, independentemente do resto)
-//   3. o certificado TLS for válido (fetch nativo do Node já rejeita
+// Um canal só entra no playlist.m3u se, em TODAS as origens de produção:
+//   1. o URL for https:// (http:// dá sempre mixed-content numa página https)
+//   2. a resposta do manifest trouxer Access-Control-Allow-Origin válido
+//   3. SE o manifest for HLS (.m3u8): o primeiro segmento real referenciado
+//      lá dentro (seguindo master → variant → segmento, se preciso) TAMBÉM
+//      trouxer Access-Control-Allow-Origin válido — porque é esse recurso,
+//      não o manifest, que o player efectivamente lê via fetch/XHR
+//   4. o certificado TLS for válido (fetch nativo do Node já rejeita
 //      certificados inválidos por padrão — um throw aqui já filtra isso)
 
 const HEALTHCHECK_TIMEOUT_MS = 8_000;
 const HEALTHCHECK_CONCURRENCY = 25; // paralelismo — ajusta conforme o tempo de execução do workflow
+
+const M3U8_EXT_RE = /\.m3u8(\?.*)?$/i;
 
 // ── Origens de produção a simular ─────────────────────────────────────────────
 // O browser SEMPRE envia "Origin" num pedido cross-origin; o fetch do Node NÃO
@@ -127,48 +144,103 @@ const BROWSER_UA =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
     '(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
-// Um canal só é considerado "playable in browser" — limpo, sem ruído — se
-// TODAS as origens de produção receberem CORS válido. Basta falhar numa
-// origem para o canal ser excluído: o objectivo é zero falsos positivos, não
-// "funciona nalgum domínio". Isto NÃO garante 100% de paridade com o browser
-// real: fingerprinting de TLS/HTTP2 (JA3/JA4) do Node é estruturalmente
-// diferente do Chrome e nenhum header consegue mascarar isso, e o alvo por
-// trás de shorteners/CDNs pode rodar entre esta verificação e o play do
-// utilizador (drift temporal — reduz-se correndo o workflow mais vezes, não
-// se elimina).
+function resolveUrl(base, ref) {
+    try {
+        return new URL(ref, base).toString();
+    } catch {
+        return null;
+    }
+}
+
+// Extrai o primeiro URI não-comentário de um ficheiro .m3u8 (primeira
+// variant, no caso de master playlist; primeiro segmento, no caso de media
+// playlist). Suficiente para health-check — não precisamos do stream todo.
+function extractFirstUri(m3u8Text) {
+    const lines = m3u8Text.split('\n').map(l => l.trim()).filter(Boolean);
+    for (const line of lines) {
+        if (!line.startsWith('#')) return line;
+    }
+    return null;
+}
+
+// Faz um único pedido com o Origin/UA simulados e devolve se passou CORS,
+// e (quando for .m3u8 e tiver passado) o corpo, para seguir a cadeia.
+async function checkOneResource(url, origin) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+
+    try {
+        const resp = await fetch(url, {
+            signal: controller.signal,
+            headers: {
+                'User-Agent': BROWSER_UA,
+                'Origin': origin,
+                'Referer': origin + '/',
+            },
+        });
+        clearTimeout(timer);
+
+        const acao    = resp.headers.get('access-control-allow-origin');
+        const allowed = (acao === '*' || acao === origin) && (resp.ok || resp.status === 206);
+
+        const contentType = resp.headers.get('content-type') || '';
+        const isM3U8 = M3U8_EXT_RE.test(url) || contentType.includes('mpegurl');
+
+        let body = null;
+        if (allowed && isM3U8) {
+            try { body = await resp.text(); } catch { body = null; }
+        }
+
+        return { allowed, isM3U8, body };
+
+    } catch {
+        clearTimeout(timer);
+        // timeout, DNS falhou, TLS inválido, connection refused
+        return { allowed: false, isM3U8: false, body: null };
+    }
+}
+
+// Segue master → media playlist (máx. 1 nível de indirecção) e devolve o
+// URL absoluto do primeiro segmento real (.ts/.m4s/etc) que o player vai
+// pedir a seguir. Devolve null se o manifest estiver vazio/malformado ou
+// se a cadeia falhar — nesse caso o canal é descartado (não arriscamos
+// aprovar algo que não conseguimos validar até ao fim).
+async function resolveFirstSegment(manifestUrl, manifestText, origin, depth = 0) {
+    const uri = extractFirstUri(manifestText);
+    if (!uri) return null;
+
+    const absolute = resolveUrl(manifestUrl, uri);
+    if (!absolute) return null;
+
+    if (M3U8_EXT_RE.test(absolute) && depth < 1) {
+        // Ainda é um playlist (master → variant) — desce mais um nível.
+        const nested = await checkOneResource(absolute, origin);
+        if (!nested.allowed || !nested.body) return null;
+        return resolveFirstSegment(absolute, nested.body, origin, depth + 1);
+    }
+
+    return absolute;
+}
+
 async function isPlayableInBrowser(url) {
     if (!url.startsWith('https://')) return false; // mixed content — descarta já sem gastar request
 
     for (const origin of PRODUCTION_ORIGINS) {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), HEALTHCHECK_TIMEOUT_MS);
+        const manifestCheck = await checkOneResource(url, origin);
+        if (!manifestCheck.allowed) return false; // falhou nesta origem → corta já
 
-        try {
-            const resp = await fetch(url, {
-                signal: controller.signal,
-                headers: {
-                    'User-Agent': BROWSER_UA,
-                    'Origin': origin,
-                    'Referer': origin + '/',
-                },
-            });
-            clearTimeout(timer);
+        if (manifestCheck.isM3U8) {
+            if (!manifestCheck.body) return false; // não conseguimos ler o manifest — não dá para validar o segmento
 
-            const acao = resp.headers.get('access-control-allow-origin');
-            const allowed = acao === '*' || acao === origin;
+            const segmentUrl = await resolveFirstSegment(url, manifestCheck.body, origin);
+            if (!segmentUrl) return false;
 
-            // Falhou nesta origem → falha para o canal inteiro, corta já.
-            if (!allowed || (!resp.ok && resp.status !== 206)) return false;
-
-        } catch {
-            clearTimeout(timer);
-            // timeout, DNS falhou, TLS inválido, connection refused — também
-            // conta como falha nesta origem, corta já.
-            return false;
+            const segmentCheck = await checkOneResource(segmentUrl, origin);
+            if (!segmentCheck.allowed) return false; // manifest passou, segmento não — é exactamente o caso real encontrado
         }
     }
 
-    return true; // passou em TODAS as origens de produção
+    return true; // passou em TODAS as origens de produção, manifest + segmento
 }
 
 // Corre isPlayableInBrowser sobre uma lista, com paralelismo limitado, para
@@ -255,8 +327,8 @@ async function main() {
     const withChannelId = streams.filter(s => s.channel).length;
     console.log(`  ↳ ${withChannelId}/${streams.length} streams have a "channel" id (rest fall back to "title")`);
 
-    // 4. Filtrar por playability (HTTPS + CORS)
-    console.log('\n[4/6] Checking HTTPS + CORS playability...');
+    // 4. Filtrar por playability (HTTPS + CORS no manifest E no segmento)
+    console.log('\n[4/6] Checking HTTPS + CORS playability (manifest + segment)...');
 
     const seenUrls = new Set();
     const dedupedStreams = streams.filter(s => {
